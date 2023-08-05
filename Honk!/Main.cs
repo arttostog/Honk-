@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using GooseShared;
 
@@ -9,23 +11,32 @@ namespace Honk
         [DllImport("user32.dll")]
         static extern short GetAsyncKeyState(Keys vKey);
 
-        static Keys Key = Keys.F;
-        static bool pressed = false;
+        public static Keys Key;
+        private static bool Pressed = false;
 
         void IMod.Init()
         {
+            SetSaveFolder();
+            Key = SaveAndLoad.Load();
+
             InjectionPoints.PreTickEvent += Tick;
         }
 
-        public void Tick(GooseEntity goose)
+        private static void SetSaveFolder()
         {
-            if (GetAsyncKeyState(Main.Key) != 0 && !pressed)
+            string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            SaveAndLoad.PathToSave = Path.Combine(assemblyFolder, "Key.json");
+        }
+
+        private static void Tick(GooseEntity goose)
+        {
+            if (GetAsyncKeyState(Key) != 0 && !Pressed)
             {
-                pressed = true;
+                Pressed = true;
                 API.Goose.playHonckSound();
                 return;
             }
-            pressed = false;
+            Pressed = false;
         }
     }
 }
