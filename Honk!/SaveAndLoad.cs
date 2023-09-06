@@ -1,31 +1,40 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.IO;
-using System.Windows.Forms;
 
 namespace Honk
 {
-    public class SaveAndLoad
+    public class SaveAndLoad<T> where T : new()
     {
-        public static string PathToSave;
+        private string PathToSave;
 
-        public static Keys Save(Keys Key)
+        public SaveAndLoad(String PathToSave)
         {
-            using (StreamWriter StreamWriter = File.CreateText(PathToSave)) StreamWriter.WriteLine(JsonConvert.SerializeObject(Key));
-            return Key;
+            this.PathToSave = PathToSave;
         }
 
-        public static Keys Load()
+        public T Save(T Object)
+        {
+            using (StreamWriter StreamWriter = File.CreateText(PathToSave)) StreamWriter.WriteLine(JsonConvert.SerializeObject(Object));
+            return Object;
+        }
+
+        public T Load(bool NewSaveIfError)
         {
             try
             {
                 using (TextReader TextReader = new StreamReader(new FileStream(PathToSave, FileMode.Open)))
                 {
-                    return JsonConvert.DeserializeObject<Keys>(TextReader.ReadLine());
+                    return JsonConvert.DeserializeObject<T>(TextReader.ReadLine());
                 }
             }
             catch
             {
-                return Save(Keys.F);
+                if (NewSaveIfError)
+                {
+                    return Save(new T());
+                }
+                return default(T);
             }
         }
     }

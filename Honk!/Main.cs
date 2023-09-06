@@ -9,31 +9,35 @@ namespace Honk
     public class Main : IMod
     {
         [DllImport("user32.dll")]
-        static extern short GetAsyncKeyState(Keys vKey);
+        private static extern short GetAsyncKeyState(Keys vKey);
 
-        public static Keys Key;
-        private static bool Pressed = false;
+        private HonkKey Key;
+        
+        private bool Pressed = false;
 
         void IMod.Init()
         {
-            SetSaveFolder();
-            Key = SaveAndLoad.Load();
+            SaveAndLoad<HonkKey> saveAndLoad = new SaveAndLoad<HonkKey>(GetSaveFolder());
+            Key = saveAndLoad.Load(true);
 
             InjectionPoints.PreTickEvent += Tick;
         }
 
-        private static void SetSaveFolder()
+        private string GetSaveFolder()
         {
             string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            SaveAndLoad.PathToSave = Path.Combine(assemblyFolder, "Key.json");
+            return Path.Combine(assemblyFolder, "Key.json");
         }
 
-        private static void Tick(GooseEntity goose)
+        private void Tick(GooseEntity goose)
         {
-            if (GetAsyncKeyState(Key) != 0 && !Pressed)
+            if (GetAsyncKeyState(Key.Key) != 0)
             {
+                if (!Pressed)
+                {
+                    API.Goose.playHonckSound();
+                }
                 Pressed = true;
-                API.Goose.playHonckSound();
                 return;
             }
             Pressed = false;
