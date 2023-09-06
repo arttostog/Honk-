@@ -4,7 +4,7 @@
 
 # Honk mod for [Samperson's Desktop Goose](https://samperson.itch.io/desktop-goose)
 
-**About**
+### About
 
 </div>
 
@@ -12,7 +12,7 @@ This is a simple mod for [Samperson's Desktop Goose](https://samperson.itch.io/d
 
 <div align="center">
 
-**Usage**
+### Usage
 
 </div>
 
@@ -21,7 +21,7 @@ This is a simple mod for [Samperson's Desktop Goose](https://samperson.itch.io/d
 
 <div align="center">
 
-**Download**
+### Download
 
 </div>
 
