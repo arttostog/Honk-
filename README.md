@@ -4,7 +4,7 @@
 
 # Honk mod for [Samperson's Desktop Goose](https://samperson.itch.io/desktop-goose)
 
-**About**
+### About
 
 </div>
 
@@ -12,16 +12,16 @@ This is a simple mod for [Samperson's Desktop Goose](https://samperson.itch.io/d
 
 <div align="center">
 
-**Usage**
+### Usage
 
 </div>
 
-- Press `F` for Honk or change `F` to any other button!
-- Now you can change button key! You will need this [table](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.keys).
+- Press `F` for Honk!
+- Now you can change button of honk in config!
 
 <div align="center">
 
-**Download**
+### Download
 
 </div>
 

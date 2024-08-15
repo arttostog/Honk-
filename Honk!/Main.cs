@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using GooseShared;
 
@@ -8,39 +6,36 @@ namespace Honk
 {
     public class Main : IMod
     {
-        [DllImport("user32.dll")]
-        private static extern short GetAsyncKeyState(Keys vKey);
+        private Keys _honkKey;
+        private bool _honkKeyIsPressed = false;
 
-        private HonkKey Key;
-        
-        private bool Pressed = false;
+        [DllImport("user32.dll")]
+        private static extern short GetAsyncKeyState(Keys key);
 
         void IMod.Init()
         {
-            SaveAndLoad<HonkKey> saveAndLoad = new SaveAndLoad<HonkKey>(GetSaveFolder());
-            Key = saveAndLoad.Load(true);
-
+            InitHonkKey();
             InjectionPoints.PreTickEvent += Tick;
         }
 
-        private string GetSaveFolder()
+        private void InitHonkKey()
         {
-            string assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return Path.Combine(assemblyFolder, "Key.json");
+            if ((_honkKey = Config.LoadKey()) == Keys.None)
+                Config.SaveKey(_honkKey = Keys.F);
         }
 
         private void Tick(GooseEntity goose)
         {
-            if (GetAsyncKeyState(Key.Key) != 0)
+            if (GetAsyncKeyState(_honkKey) != 0)
             {
-                if (!Pressed)
+                if (!_honkKeyIsPressed)
                 {
                     API.Goose.playHonckSound();
+                    _honkKeyIsPressed = true;
                 }
-                Pressed = true;
                 return;
             }
-            Pressed = false;
+            _honkKeyIsPressed = false;
         }
     }
 }
